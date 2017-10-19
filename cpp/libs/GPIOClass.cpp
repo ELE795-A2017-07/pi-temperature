@@ -64,6 +64,7 @@ int GPIOClass::setval_gpio(string val) {
 		}
 
 		setvalgpio << val ;//write value to value file
+		setvalgpio.flush();
 		setvalgpio.close();// close value file
 		return 0;
 }

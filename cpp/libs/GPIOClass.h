@@ -20,6 +20,7 @@ public:
     string get_gpionum(); // return the GPIO number associated with the instance of an object
 private:
     string gpionum; // GPIO number associated with the instance of an object
+		
 };
 
 #endif
