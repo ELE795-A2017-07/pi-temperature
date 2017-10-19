@@ -1,4 +1,5 @@
 CC := g++
+CXXFLAGS := -std=c++0x -g -iquote libs
 LIB_SRC := $(wildcard libs/*.cpp)
 LIB_OBJ := $(patsubst %.cpp,%.o,$(LIB_SRC))
 
