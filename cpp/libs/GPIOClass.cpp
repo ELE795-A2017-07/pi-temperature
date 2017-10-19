@@ -7,11 +7,15 @@
 using namespace std;
 
 GPIOClass::GPIOClass() {
-	this->gpionum = "4"; //GPIO4 is default
+	GPIOClass::construct("8"); //GPIO8 is default
 }
 
 GPIOClass::GPIOClass(string gnum) {
-	this->gpionum = gnum; //Instatiate GPIOClass object for GPIO pin number "gnum"
+	GPIOClass::construct(gnum);
+}
+
+void GPIOClass::construct(string gnum) {
+	this->gpionum = gnum; //Instantiate GPIOClass object for GPIO pin number "gnum"
 }
 
 int GPIOClass::export_gpio() {
@@ -41,44 +45,45 @@ int GPIOClass::unexport_gpio() {
 }
 
 int GPIOClass::setdir_gpio(string dir) {
+	if (!this->dir_s.is_open()) {
+		string setdir_str ="/sys/class/gpio/gpio" + this->gpionum + "/direction";
+		this->dir_s.open(setdir_str.c_str()); // open direction file for gpio
 
-	string setdir_str ="/sys/class/gpio/gpio" + this->gpionum + "/direction";
-	ofstream setdirgpio(setdir_str.c_str()); // open direction file for gpio
-		if (setdirgpio < 0) {
+		if (!this->dir_s) {
 			cout << " OPERATION FAILED: Unable to set direction of GPIO"<< this->gpionum <<" ."<< endl;
 			return -1;
 		}
+	}
 
-		setdirgpio << dir; //write direction to direction file
-		setdirgpio.close(); // close direction file
-		return 0;
+	this->dir_s << dir; //write direction to direction file
+	return 0;
 }
 
 int GPIOClass::setval_gpio(string val) {
-
-	string setval_str = "/sys/class/gpio/gpio" + this->gpionum + "/value";
-	ofstream setvalgpio(setval_str.c_str()); // open value file for gpio
-		if (setvalgpio < 0) {
+	if (!this->data_s.is_open()) {
+		string setval_str = "/sys/class/gpio/gpio" + this->gpionum + "/value";
+		this->data_s.open(setval_str.c_str()); // open value file for gpio
+		if (!this->data_s) {
 			cout << " OPERATION FAILED: Unable to set the value of GPIO"<< this->gpionum <<" ."<< endl;
 			return -1;
 		}
+	}
 
-		setvalgpio << val ;//write value to value file
-		setvalgpio.flush();
-		setvalgpio.close();// close value file
-		return 0;
+	this->data_s << val << flush; //write value to value file
+	return 0;
 }
 
 int GPIOClass::getval_gpio(string& val) {
-
-	string getval_str = "/sys/class/gpio/gpio" + this->gpionum + "/value";
-	ifstream getvalgpio(getval_str.c_str());// open value file for gpio
-	if (getvalgpio < 0) {
-		cout << " OPERATION FAILED: Unable to get value of GPIO"<< this->gpionum <<" ."<< endl;
-		return -1;
+	if (!this->data_s.is_open()) {
+		string getval_str = "/sys/class/gpio/gpio" + this->gpionum + "/value";
+		this->data_s.open(getval_str.c_str()); // open value file for gpio
+		if (!this->data_s) {
+			cout << " OPERATION FAILED: Unable to get value of GPIO"<< this->gpionum <<" ."<< endl;
+			return -1;
+		}
 	}
 
-	getvalgpio >> val ; //read gpio value
+	this->data_s >> val ; //read gpio value
 
 	if (val != "0") {
 		val = "1";
@@ -86,7 +91,6 @@ int GPIOClass::getval_gpio(string& val) {
 		val = "0";
 	}
 
-	getvalgpio.close(); //close the value file
 	return 0;
 }
 
