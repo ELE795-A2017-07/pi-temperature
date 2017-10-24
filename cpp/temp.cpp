@@ -79,7 +79,7 @@ bool read_presence(bool waitUntilLineFree = true) {
 
 	pinMode(TEMP_SENSOR_PIN, INPUT);
 	//Wait for the line to go up after the reset pulse
-	while (digitalRead(TEMP_SENSOR_PIN)) {}
+	while (!digitalRead(TEMP_SENSOR_PIN)) {}
 
 	while (!b_responded && chrono::system_clock::now() < t1) {
 		if (!digitalRead(TEMP_SENSOR_PIN)) {
