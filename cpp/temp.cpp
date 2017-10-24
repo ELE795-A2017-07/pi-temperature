@@ -10,6 +10,23 @@ using namespace std;
 
 const int TEMP_SENSOR_PIN = 15;
 
+typedef enum {
+	SEARCH_ROM    = 0xF0,
+	READ_ROM      = 0x33,
+	MATCH_ROM     = 0x55,
+	SKIP_ROM      = 0xCC,
+	ALARM_SEARCH  = 0xEC
+} ROM_CMDS_t;
+
+typedef enum {
+	CONVERT_T     = 0x44,
+	WRITE_SCRATCH = 0x4E,
+	READ_SCRATCH  = 0xBE,
+	COPY_SCRATCH  = 0x48,
+	RECALL_E2     = 0xB8,
+	READ_PWR_SUP  = 0xB4
+} FCT_CMDS_t;
+
 chrono::time_point<chrono::system_clock> get_time_point(int us_delay) {
 	return chrono::system_clock::now() + chrono::microseconds(us_delay);
 }
@@ -31,6 +48,8 @@ void init(void) {
 }
 
 void oscope_trigger(void) {
+	pinMode(TEMP_SENSOR_PIN, OUTPUT);
+
 	//This sends a recognizable pattern for the oscilloscope to trigger on
 	digitalWrite(TEMP_SENSOR_PIN, LOW);
 	busywait(25);
@@ -47,11 +66,12 @@ void oscope_trigger(void) {
 }
 
 void reset_pulse(void) {
+	pinMode(TEMP_SENSOR_PIN, OUTPUT);
 	digitalWrite(TEMP_SENSOR_PIN, LOW);
 	busywait(500);
 }
 
-bool read_presence(bool waitUntilLineFree) {
+bool read_presence(bool waitUntilLineFree = true) {
 	bool b_responded = false;
 
 	//Sensor waits 15us to 60 us then pulls low for 60us to 240us
@@ -94,23 +114,6 @@ void write_slot_recovery(void) {
 	busywait(2);
 }
 
-typedef enum {
-	SEARCH_ROM    = 0xF0,
-	READ_ROM      = 0x33,
-	MATCH_ROM     = 0x55,
-	SKIP_ROM      = 0xCC,
-	ALARM_SEARCH  = 0xEC
-} ROM_CMDS_t;
-
-typedef enum {
-	CONVERT_T     = 0x44,
-	WRITE_SCRATCH = 0x4E,
-	READ_SCRATCH  = 0xBE,
-	COPY_SCRATCH  = 0x48,
-	RECALL_E2     = 0xB8,
-	READ_PWR_SUP  = 0xB4
-} FCT_CMDS_t;
-
 //Stuff is transmitted LSb first
 void write_cmd(int8_t cmd) {
 	for (int i = 0; i < 8; i++) {
@@ -139,32 +142,109 @@ int read_bit(void) {
 	return bit;
 }
 
+int init_seq(void) {
+	reset_pulse();
+	return read_presence(true);
+}
+
+uint64_t read_rom_code(void) {
+	uint64_t rom_code = 0;
+	int bit;
+
+	int b_present = init_seq();
+	if (b_present) {
+		write_cmd(READ_ROM);
+		for (int i = 0; i < 64; i++) {
+			bit = read_bit();
+			rom_code |= (uint64_t(bit) << i);
+		}
+	}
+	return rom_code;
+}
+
+void skip_rom(void) {
+	write_cmd(SKIP_ROM);
+}
+
+void match_rom(uint64_t rom_code) {
+	if (0) { //STUB
+		write_cmd(MATCH_ROM);
+	}
+	return;
+}
+
+int convert_t(uint64_t *p_rom_code, bool b_wait=true) {
+	int bit;
+
+	do {
+		if (!init_seq()) {
+			return -1;
+		}
+		if (p_rom_code == nullptr) {
+			skip_rom();
+		} else {
+			match_rom(*p_rom_code);
+		}
+
+		write_cmd(CONVERT_T);
+		bit = read_bit();
+	} while (!bit && b_wait);
+
+	return bit;
+}
+
+
+//Returns the (nb_bits + 1) bits of data (and CRC) in the lsbs or <0 on errors
+int16_t read_scratchpad(uint64_t *p_rom_code, int nb_bits = 12) {
+	int16_t val = 0;
+
+	if (!init_seq()) {
+		return -1;
+	}
+	if (p_rom_code == nullptr) {
+		skip_rom();
+	} else {
+		match_rom(*p_rom_code);
+	}
+
+	write_cmd(READ_SCRATCH);
+	//Add one bit for CRC
+	for (int i = 0; i < nb_bits + 1; i++) {
+		int bit = read_bit();
+		val |= bit << i;
+	}
+
+	return val;
+}
+
 int main (void) {
-	bool b_present;
-	int bits[64] = { 0 };
+	uint64_t rom_code;
+	int16_t temp_val;
+	int temp_ready = -2;
 
 	cout << "Temp started" << endl;
 	init();
 
 	oscope_trigger();
-	reset_pulse();
-	b_present = read_presence(true);
+	rom_code = read_rom_code();
 
-	if (b_present) {
-		uint64_t rom_code = 0;
-		write_cmd(READ_ROM);
-		for (int i = 0; i < 64; i++) {
-			bits[i] = read_bit();
-			rom_code |= (((uint64_t)bits[i]) << i);
-		}
-		cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
-		#if 0
-		for (int i = 0; i < 64; i++) {
-			cout << "bits[" << i << "] = " << bits[i] << endl;
-		}
-		#endif
-	} else {
+	if (rom_code == 0) {
 		cout << "Sensor didn't respond" << endl;
+	} else {
+		cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
+		int16_t last_temp = -1;
+		while (true) {
+			temp_ready = convert_t(nullptr);
+			temp_val = read_scratchpad(nullptr);
+
+			//cout << "Temperature is ready? " << dec << temp_ready << endl;
+			if (temp_ready > 0 && temp_val != last_temp) {
+				last_temp = temp_val;
+				float temp = ((temp_val & 0xfff) >> 4) + float(temp_val & 0xf) / 16;
+				cout << "Temp = " << hex << temp_val << endl;
+				cout << "Temperature is around " << dec << temp << endl;
+			}
+		}
 	}
 
 	pinMode(TEMP_SENSOR_PIN, INPUT);
