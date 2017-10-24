@@ -5,10 +5,14 @@
 #include <stdlib.h>
 #include <chrono>
 #include <wiringPi.h>
+#include <mosquitto.h>
 
 using namespace std;
 
 const int TEMP_SENSOR_PIN = 15;
+const char MQTT_HOST[] = "207.162.8.230";
+const int MQTT_PORT = 8080;
+const int MQTT_KEEPALIVE = 0;
 
 typedef enum {
 	SEARCH_ROM    = 0xF0,
@@ -45,6 +49,8 @@ void init(void) {
 	wiringPiSetup();
 	pinMode(TEMP_SENSOR_PIN, OUTPUT);
 	pullUpDnControl(TEMP_SENSOR_PIN, PUD_UP);
+
+	mosquitto_lib_init();
 }
 
 void oscope_trigger(void) {
@@ -221,9 +227,13 @@ int main (void) {
 	uint64_t rom_code;
 	int16_t temp_val;
 	int temp_ready = -2;
+	struct mosquitto *mosq_client;
 
 	cout << "Temp started" << endl;
 	init();
+	mosq_client = mosquitto_new("dioo-test", nullptr);
+	mosquitto_username_pw_set(mosq_client, "", "");
+	mosquitto_connect(mosq_client, MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE, true);
 
 	oscope_trigger();
 	rom_code = read_rom_code();
@@ -247,6 +257,8 @@ int main (void) {
 		}
 	}
 
+	mosquitto_disconnect(mosq_client);
+	mosquitto_destroy(mosq_client);
 	pinMode(TEMP_SENSOR_PIN, INPUT);
 	cout << "Exiting....." << endl;
 	return 0;
