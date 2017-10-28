@@ -265,7 +265,11 @@ int main (void) {
 			if (temp_ready > 0 && temp_val != last_temp) {
 				last_temp = temp_val;
 				float temp = ((temp_val & 0xfff) >> 4) + float(temp_val & 0xf) / 16;
-				cout << "Temp = " << hex << temp_val << endl;
+				cout << "Scratch = 0x";
+				for (int i = 8; i >= 0; i--) {
+					printf("%02x", scratchpad[i]);
+				}
+				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
 			}
 		}
