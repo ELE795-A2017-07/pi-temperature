@@ -4,10 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
+#include <array>
 #include <wiringPi.h>
 #include <mosquitto.h>
 
 using namespace std;
+
+//Invalid value, bits 15 to 11 should all be sign bits
+const uint16_t E_INVALID_SCRATCH = 0x8000;
 
 const int TEMP_SENSOR_PIN = 15;
 const char MQTT_HOST[] = "207.162.8.230";
@@ -201,11 +205,11 @@ int convert_t(uint64_t *p_rom_code, bool b_wait=true) {
 
 
 //Returns the (nb_bits + 1) bits of data (and CRC) in the lsbs or <0 on errors
-int16_t read_scratchpad(uint64_t *p_rom_code, int nb_bits = 12) {
-	int16_t val = 0;
+array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits = 9*8) {
+	array<uint8_t, 9> data;
 
 	if (!init_seq()) {
-		return -1;
+		return { {E_INVALID_SCRATCH & 0xFF, E_INVALID_SCRATCH >> 8} };
 	}
 	if (p_rom_code == nullptr) {
 		skip_rom();
@@ -215,17 +219,24 @@ int16_t read_scratchpad(uint64_t *p_rom_code, int nb_bits = 12) {
 
 	write_cmd(READ_SCRATCH);
 	//Add one bit for CRC
-	for (int i = 0; i < nb_bits + 1; i++) {
+	for (int i = 0; i < nb_bits; i++) {
 		int bit = read_bit();
-		val |= bit << i;
+		data[i/8] |= bit << (i%8);
 	}
 
-	return val;
+	return data;
+}
+
+int crc_check(uint16_t data, int nb_data_bits) {
+	uint16_t crc_bit_mask = 1 << nb_data_bits;
+	uint16_t data_mask = crc_bit_mask - 1;
+	uint16_t val = data & data_mask;
+	int crc_bit = !!(data & crc_bit_mask);
 }
 
 int main (void) {
 	uint64_t rom_code;
-	int16_t temp_val;
+	array<uint8_t, 9> scratchpad;
 	int temp_ready = -2;
 	struct mosquitto *mosq_client;
 
@@ -242,10 +253,13 @@ int main (void) {
 		cout << "Sensor didn't respond" << endl;
 	} else {
 		cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
-		int16_t last_temp = -1;
+
+		uint16_t last_temp = E_INVALID_SCRATCH;
+		uint16_t temp_val;
 		while (true) {
 			temp_ready = convert_t(nullptr);
-			temp_val = read_scratchpad(nullptr);
+			scratchpad = read_scratchpad(nullptr, 12);
+			temp_val = (scratchpad[1] << 8) | scratchpad[0];
 
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
 			if (temp_ready > 0 && temp_val != last_temp) {
