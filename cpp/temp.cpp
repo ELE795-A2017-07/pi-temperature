@@ -258,13 +258,13 @@ int main (void) {
 		uint16_t temp_val;
 		while (true) {
 			temp_ready = convert_t(nullptr);
-			scratchpad = read_scratchpad(nullptr, 12);
+			scratchpad = read_scratchpad(nullptr);
 			temp_val = (scratchpad[1] << 8) | scratchpad[0];
 
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
 			if (temp_ready > 0 && temp_val != last_temp) {
 				last_temp = temp_val;
-				float temp = ((temp_val & 0xfff) >> 4) + float(temp_val & 0xf) / 16;
+				float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
 				cout << "Scratch = 0x";
 				for (int i = 8; i >= 0; i--) {
 					printf("%02x", scratchpad[i]);
