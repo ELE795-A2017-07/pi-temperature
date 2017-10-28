@@ -206,7 +206,7 @@ int convert_t(uint64_t *p_rom_code, bool b_wait=true) {
 
 //Returns the (nb_bits + 1) bits of data (and CRC) in the lsbs or <0 on errors
 array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits = 9*8) {
-	array<uint8_t, 9> data;
+	array<uint8_t, 9> data = { 0 };
 
 	if (!init_seq()) {
 		return { {E_INVALID_SCRATCH & 0xFF, E_INVALID_SCRATCH >> 8} };
