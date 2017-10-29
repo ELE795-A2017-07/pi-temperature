@@ -11,3 +11,4 @@ $ make temp && sudo ./temp
 
 REFERENCES:
  * wiringPi pin numbering: https://projects.drogon.net/raspberry-pi/wiringpi/pins/
+ * Raspberry Pi physical pin numbering: https://www.raspberrypi.org/documentation/usage/gpio/
