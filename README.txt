@@ -8,3 +8,6 @@ $ (cd wiringPi && ./build)
 
 Afterwards, build the project and use it:
 $ make temp && sudo ./temp
+
+REFERENCES:
+ * wiringPi pin numbering: https://projects.drogon.net/raspberry-pi/wiringpi/pins/
