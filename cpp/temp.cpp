@@ -16,8 +16,15 @@ const uint16_t E_INVALID_SCRATCH = 0x8000;
 const int TEMP_SENSOR_PIN = 15;
 const int TRIGGER_PIN = 7;
 
+const char MQTT_CLIENT_ID = "dioo-test";
+#if 0
 const char MQTT_HOST[] = "207.162.8.230";
 const int MQTT_PORT = 8080;
+#else
+const char MQTT_HOST[] = "hexadecimal";
+const int MQTT_PORT = 1884;
+#endif
+
 const int MQTT_KEEPALIVE = 0;
 
 typedef enum {
@@ -268,7 +275,11 @@ int main (void) {
 
 	cout << "Temp started" << endl;
 	init();
-	mosq_client = mosquitto_new("dioo-test", nullptr);
+
+	int major, minor, revision;
+	mosquitto_lib_version(&major, &minor, &revision);
+	cout << "Using mosquitto v" << major << "." << minor << "." << revision << endl;
+	mosq_client = mosquitto_new(MQTT_CLIENT_ID, nullptr);
 	mosquitto_username_pw_set(mosq_client, "", "");
 	mosquitto_connect(mosq_client, MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE, true);
 
@@ -290,7 +301,7 @@ int main (void) {
 
 		uint16_t last_temp = E_INVALID_SCRATCH;
 		uint16_t temp_val;
-		while (true) {
+		while (false) {
 			bool do_print;
 			do_print = true;
 			temp_ready = convert_t(nullptr);
