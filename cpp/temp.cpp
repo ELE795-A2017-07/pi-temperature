@@ -142,17 +142,18 @@ int read_bit(void) {
 	//Indicate a read time slot by pulling the line for 1us
 	pinMode(TEMP_SENSOR_PIN, OUTPUT);
 	digitalWrite(TEMP_SENSOR_PIN, LOW);
-	busywait(1);
+	busywait(2);
 
 	//Read the line within 15us
 	pinMode(TEMP_SENSOR_PIN, INPUT);
-	busywait(2);
+	busywait(3);
 	int bit = digitalRead(TEMP_SENSOR_PIN);
 	busywait(60);
 
-
 	//Wait for the line to go back to the pullup state
-	while (!digitalRead(TEMP_SENSOR_PIN)) {}
+	//while (!digitalRead(TEMP_SENSOR_PIN)) {}
+
+	write_slot_recovery();
 
 	return bit;
 }
