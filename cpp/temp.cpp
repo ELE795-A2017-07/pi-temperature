@@ -14,6 +14,8 @@ using namespace std;
 const uint16_t E_INVALID_SCRATCH = 0x8000;
 
 const int TEMP_SENSOR_PIN = 15;
+const int TRIGGER_PIN = 7;
+
 const char MQTT_HOST[] = "207.162.8.230";
 const int MQTT_PORT = 8080;
 const int MQTT_KEEPALIVE = 0;
@@ -53,6 +55,9 @@ void init(void) {
 	wiringPiSetup();
 	pinMode(TEMP_SENSOR_PIN, OUTPUT);
 	pullUpDnControl(TEMP_SENSOR_PIN, PUD_UP);
+
+	pinMode(TRIGGER_PIN, OUTPUT);
+	digitalWrite(TRIGGER_PIN, LOW);
 
 	mosquitto_lib_init();
 }
@@ -273,16 +278,37 @@ int main (void) {
 		cout << "Sensor didn't respond" << endl;
 	} else {
 		cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
+		int ret;
+		uint16_t mid;
+		//Hex code is two characters per byte + '0x' + '\0'
+		const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
+		uint8_t payload[PAYLOAD_LEN] = {0};
+		snprintf(((char*)payload), PAYLOAD_LEN, "0x%llx", rom_code);
+		ret = mosquitto_publish(mosq_client, &mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
+		cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
 
 		uint16_t last_temp = E_INVALID_SCRATCH;
 		uint16_t temp_val;
 		while (true) {
+			bool do_print;
+			do_print = true;
 			temp_ready = convert_t(nullptr);
 			scratchpad = read_scratchpad(nullptr);
 			temp_val = (scratchpad[1] << 8) | scratchpad[0];
 
+			if (temp_ready < 1) {
+				do_print = false;
+			} else if (!scratch_crc_check(scratchpad)) {
+				cout << "next is bogus:" << endl;
+				digitalWrite(TRIGGER_PIN, HIGH);
+			} else {
+				digitalWrite(TRIGGER_PIN, LOW);
+				if (temp_val == last_temp) {
+					do_print = false;
+				}
+			}
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
-			if (temp_ready > 0 && temp_val != last_temp) {
+			if (do_print) {
 				last_temp = temp_val;
 				float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
 				cout << "Scratch = 0x";
