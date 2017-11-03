@@ -54,7 +54,7 @@ bool read_presence(bool waitUntilLineFree = true) {
 	//Wait for the line to go up after the reset pulse
 	while (!digitalRead(sensor_pin)) {}
 
-	while (!b_responded && chrono::system_clock::now() < t1) {
+	while (!b_responded && std::chrono::system_clock::now() < t1) {
 		if (!digitalRead(sensor_pin)) {
 			b_responded = true;
 
