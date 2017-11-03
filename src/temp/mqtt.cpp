@@ -10,9 +10,9 @@ Mqtt::Mqtt(std::string clientId, void *obj, bool cleansession) {
 	this->cleansession = cleansession;
 
 	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
-		mosquitto_new(clientId.c_str(), obj);
+		this->mosq = mosquitto_new(clientId.c_str(), obj);
 	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
-		mosquitto_new(clientId.c_str(), cleansession, obj);
+		this->mosq = mosquitto_new(clientId.c_str(), cleansession, obj);
 	#else
 	#error mosquitto_new not implemented for this libmosquitto version
 	#endif
