@@ -71,8 +71,8 @@ int main (void) {
 		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 		uint16_t temp_val;
 		for (int i = 0; i < 10; ) {
-			bool do_print;
-			do_print = true;
+			bool do_print = true;
+			bool is_valid = false;
 			temp_ready = OneWire::convert_t(nullptr);
 			scratchpad = OneWire::read_scratchpad(nullptr);
 			temp_val = (scratchpad[1] << 8) | scratchpad[0];
@@ -85,7 +85,9 @@ int main (void) {
 			} else {
 				//digitalWrite(TRIGGER_PIN, LOW);
 				if (temp_val == last_temp) {
-					do_print = false;
+					//do_print = false;
+				} else {
+					is_valid = true;
 				}
 			}
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
@@ -99,7 +101,9 @@ int main (void) {
 				}
 				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
-				send_temperature(mqtt, temp);
+				if (is_valid) {
+					send_temperature(mqtt, temp);
+				}
 			}
 		}
 	}
