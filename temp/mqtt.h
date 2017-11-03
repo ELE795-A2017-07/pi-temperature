@@ -26,6 +26,6 @@ class Mqtt {
 		int connect(std::string host, int port, int keepalive);
 		int publish(int *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain);
 		int disconnect(void);
-}
+};
 
 #endif /* Guard */
