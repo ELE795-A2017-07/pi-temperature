@@ -1,5 +1,6 @@
 CC := g++
-CXXFLAGS := -std=c++0x -lwiringPi -lmosquitto
+CXXFLAGS := -std=c++0x
+LDFLAGS := -lwiringPi -lmosquitto
 
 OBJ_DIR := build
 SRC_DIR := src
@@ -20,7 +21,7 @@ $(TEMP_OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(TEMP_OBJ_DIR)
 	$(CC) $(CXXFLAGS) -o $@ -c $^
 
 pwm: $(SRC_DIR)/pwm.c
-	$(CC) $(CXXFLAGS) -o $@ $^
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 temp: $(TEMP_OBJ)
-	$(CC) $(CXXFLAGS) -o $@ $^
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
