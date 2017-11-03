@@ -5,9 +5,9 @@ const int TEMP_SENSOR_PIN = 15;
 const int TRIGGER_PIN = 7;
 
 #include <chrono>
-#define SAMPLE_INTERVAL std::chrono::seconds(10)
+#define SAMPLE_INTERVAL std::chrono::minutes(10)
 
-#if 1 //DEBUG
+#if DEBUG
 const char MQTT_HOST[] = "hexadecimal";
 const int MQTT_PORT = 1884;
 #else
