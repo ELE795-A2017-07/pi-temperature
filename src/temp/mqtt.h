@@ -6,7 +6,7 @@
 class Mqtt {
 	bool cleansession;
 	struct mosquitto *mosq;
-	string clientId;
+	std::string clientId;
 
 	public:
 		static void init(void);
