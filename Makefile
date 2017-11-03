@@ -17,7 +17,7 @@ $(OBJ_DIR):
 $(TEMP_OBJ_DIR): $(OBJ_DIR)
 	@mkdir -p $@
 
-$(TEMP_OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(TEMP_OBJ_DIR)
+$(TEMP_OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp | $(TEMP_OBJ_DIR)
 	$(CC) $(CXXFLAGS) -o $@ -c $^
 
 pwm: $(SRC_DIR)/pwm.c
