@@ -6,7 +6,7 @@ static void Mqtt::init(void) {
 	mosquitto_lib_init();
 }
 
-Mqtt::Mqtt(string clientId, void *obj, bool cleansession) {
+Mqtt::Mqtt(std::string clientId, void *obj, bool cleansession) {
 	this.cleansession = cleansession;
 
 	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
@@ -23,7 +23,7 @@ Mqtt::~Mqtt(void) {
 	mosquitto_destroy(this.mosq);
 }
 
-int Mqtt::set_credentials(string username, string password) {
+int Mqtt::set_credentials(std::string username, std::string password) {
 	int ret;
 
 	ret = mosquitto_username_pw_set(this.mosq, username.c_str(), password.c_str());
@@ -31,7 +31,7 @@ int Mqtt::set_credentials(string username, string password) {
 	return ret;
 }
 
-int Mqtt::connect(string host, int port, int keepalive) {
+int Mqtt::connect(std::string host, int port, int keepalive) {
 	int ret;
 
 	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
@@ -45,7 +45,7 @@ int Mqtt::connect(string host, int port, int keepalive) {
 	return ret;
 }
 
-int Mqtt::publish(int *msg_id, string topic, int payloadlen, void *payload, int qos, bool retain) {
+int Mqtt::publish(int *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain) {
 	int ret;
 	
 	ret = mosquitto_publish(this.mosq, mid, topic.c_str(), payloadlen, payload, qos, retain);
