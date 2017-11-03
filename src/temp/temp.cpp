@@ -70,6 +70,7 @@ int main (void) {
 	stringstream ss;
 	ss << "0x" << hex << rom_code;
 	client_id = ss.str();
+	cout << "Client ID is " << client_id << endl;
 
 	//int major, minor, revision;
 	//mosquitto_lib_version(&major, &minor, &revision);
