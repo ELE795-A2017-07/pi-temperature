@@ -1,6 +1,6 @@
 CC := g++
-CXXFLAGS := -std=c++0x
-LDFLAGS := -lwiringPi -lmosquitto
+override CXXFLAGS += -std=c++0x
+override LDFLAGS += -lwiringPi -lmosquitto
 
 OBJ_DIR := build
 SRC_DIR := src
