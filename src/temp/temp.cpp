@@ -100,21 +100,25 @@ int main (void) {
 					//do_print = false;
 				}
 			}
-			//cout << "Temperature is ready? " << dec << temp_ready << endl;
-			if (do_print) {
-				last_temp = temp_val;
+
+			if (do_print || is_valid) {
 				float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
-				cout << "Scratch = 0x";
-				for (int i = 8; i >= 0; i--) {
-					printf("%02x", scratchpad[i]);
+
+				//cout << "Temperature is ready? " << dec << temp_ready << endl;
+				if (do_print) {
+					last_temp = temp_val;
+					cout << "Scratch = 0x";
+					for (int i = 8; i >= 0; i--) {
+						printf("%02x", scratchpad[i]);
+					}
+					cout << endl;
+					cout << "Temperature is around " << dec << temp << endl;
 				}
-				cout << endl;
-				cout << "Temperature is around " << dec << temp << endl;
-			}
-			if (is_valid) {
-				i++;
-				send_temperature(mqtt, temp);
-				std::this_thread::sleep_for(std::chrono::seconds(5));
+				if (is_valid) {
+					i++;
+					send_temperature(mqtt, temp);
+					std::this_thread::sleep_for(std::chrono::seconds(5));
+				}
 			}
 		}
 	}
