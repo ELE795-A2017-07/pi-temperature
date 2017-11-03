@@ -52,4 +52,6 @@ std::array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits = 9*8);
 
 bool scratch_crc_check(std::array<uint8_t, 9> scratchpad);
 
+}
+
 #endif /* Guard */
