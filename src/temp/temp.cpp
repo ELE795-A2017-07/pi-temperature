@@ -99,7 +99,7 @@ int main (void) {
 				}
 				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
-				send_temperature(mqtt, temp);
+				//send_temperature(mqtt, temp);
 			}
 		}
 	}
