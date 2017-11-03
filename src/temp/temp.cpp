@@ -109,7 +109,7 @@ int main (void) {
 
 	uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 	uint16_t temp_val;
-	for (int i = 0; i < 10; ) {
+	for (; ; ) {
 		bool do_print = true;
 		bool is_valid = false;
 		temp_ready = OneWire::convert_t(nullptr);
@@ -143,7 +143,6 @@ int main (void) {
 				cout << "Temperature is around " << dec << temp << endl;
 			}
 			if (is_valid) {
-				i++;
 				send_temperature(mqtt, temp);
 				std::this_thread::sleep_for(SAMPLE_INTERVAL);
 			}
