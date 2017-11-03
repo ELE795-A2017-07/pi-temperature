@@ -69,7 +69,7 @@ int main (void) {
 		rom_code = OneWire::read_rom_code();
 	}
 	stringstream ss;
-	ss << std::setfill('0') << std::setw((sizeof rom_code) * 2 + 2) << "0x" << hex << rom_code;
+	ss << "0x" << std::setfill('0') << std::setw((sizeof rom_code) * 2) << hex << rom_code;
 	client_id = ss.str();
 	cout << "Client ID is " << client_id << endl;
 	cout << "Rom code is " << hex << rom_code << endl;
