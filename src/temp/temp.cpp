@@ -24,7 +24,7 @@ int32_t send_temperature(float temp) {
 	//const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
 
 	//sign (1), integral part (3), decimal separator (1), fractional part (3), end-of-string (1) = 9
-	const size_t PAYLOAD_LEN[10] = {0};
+	const size_t PAYLOAD_LEN = 9;
 	uint8_t payload[PAYLOAD_LEN] = {0};
 	snprintf(((char*)payload), PAYLOAD_LEN, "%f", temp);
 	ret = mqtt.publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
