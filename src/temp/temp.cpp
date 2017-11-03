@@ -17,7 +17,7 @@ void init(void) {
 	Mqtt::init();
 }
 
-int32_t send_temperature(Mqtt mqtt, float temp) {
+int32_t send_temperature(Mqtt& mqtt, float temp) {
 	int ret;
 	int32_t mid;
 	//Hex code is two characters per byte + '0x' + '\0'
@@ -99,7 +99,7 @@ int main (void) {
 				}
 				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
-				//send_temperature(mqtt, temp);
+				send_temperature(mqtt, temp);
 			}
 		}
 	}
