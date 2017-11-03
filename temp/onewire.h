@@ -4,7 +4,7 @@
 #include <array>
 #include <cstdint>
 
-#include <utils.h>
+#include "utils.h"
 
 namespace OneWire {
 
