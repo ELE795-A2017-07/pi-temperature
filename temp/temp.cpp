@@ -13,7 +13,7 @@
 using namespace std;
 
 void init(void) {
-	OneWire::init();
+	OneWire::init(TEMP_SENSOR_PIN, TRIGGER_PIN);
 	Mqtt::init();
 }
 
