@@ -1,6 +1,8 @@
 #ifndef MQTT_H
 #define MQTT_H
 
+#include <string>
+
 #define MQTT_CLIENT_ID "dioo-test"
 #if 0
 const char MQTT_HOST[] = "207.162.8.230";
