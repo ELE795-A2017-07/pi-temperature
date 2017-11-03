@@ -103,6 +103,7 @@ int main (void) {
 				cout << "Temperature is around " << dec << temp << endl;
 				if (is_valid) {
 					send_temperature(mqtt, temp);
+					std::this_thread::sleep_for(std::chrono::seconds(5));
 				}
 			}
 		}
