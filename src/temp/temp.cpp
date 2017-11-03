@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
@@ -55,6 +56,17 @@ int32_t send_temperature(Mqtt& mqtt, float temp) {
 	return mid;
 }
 
+string get_mac_addr(void) {
+	string mac_addr; = "Palais des congres (unknown)";
+
+	ifstream myfile("/sys/class/net/wlan0/address");
+	if (myfile.is_open()) {
+		mac_addr = getline(file);
+	}
+
+	return mac_addr;
+}
+
 
 int main (void) {
 	uint64_t rom_code;
@@ -70,7 +82,7 @@ int main (void) {
 	}
 	stringstream ss;
 	ss << "0x" << std::setfill('0') << std::setw((sizeof rom_code) * 2) << hex << rom_code;
-	client_id = ss.str();
+	client_id = get_mac_addr();
 	cout << "Client ID is " << client_id << endl;
 	cout << "Rom code is " << hex << rom_code << endl;
 
