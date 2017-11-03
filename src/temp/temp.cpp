@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <array>
+#include <thread>
 
 #include "globals.h"
 #include "mqtt.h"
