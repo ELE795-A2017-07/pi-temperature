@@ -61,7 +61,7 @@ string get_mac_addr(void) {
 
 	ifstream myfile("/sys/class/net/wlan0/address");
 	if (myfile.is_open()) {
-		mac_addr = getline(myfile);
+		getline(myfile, mac_addr);
 	}
 
 	return mac_addr;
