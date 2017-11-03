@@ -52,7 +52,7 @@ void skip_rom(void);
 
 void match_rom(uint64_t rom_code);
 
-int convert_t(uint64_t *p_rom_code, bool b_wait=true);
+int convert_t(uint64_t *p_rom_code, bool b_wait = true);
 
 std::array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits = 9*8);
 

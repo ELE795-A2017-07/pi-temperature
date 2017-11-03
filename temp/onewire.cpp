@@ -44,7 +44,7 @@ void reset_pulse(void) {
 	busywait(500);
 }
 
-bool read_presence(bool waitUntilLineFree = true) {
+bool read_presence(bool waitUntilLineFree) {
 	bool b_responded = false;
 
 	//Sensor waits 15us to 60 us then pulls low for 60us to 240us
@@ -147,7 +147,7 @@ void match_rom(uint64_t rom_code) {
 	return;
 }
 
-int convert_t(uint64_t *p_rom_code, bool b_wait=true) {
+int convert_t(uint64_t *p_rom_code, bool b_wait) {
 	int bit;
 
 	do {
@@ -169,7 +169,7 @@ int convert_t(uint64_t *p_rom_code, bool b_wait=true) {
 
 
 //Returns the (nb_bits + 1) bits of data (and CRC) in the lsbs or <0 on errors
-std::array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits = 9*8) {
+std::array<uint8_t, 9> read_scratchpad(uint64_t *p_rom_code, int nb_bits) {
 	std::array<uint8_t, 9> data = { 0 };
 
 	if (!init_seq()) {
