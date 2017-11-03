@@ -94,11 +94,10 @@ int main (void) {
 				cout << "next is bogus:" << endl;
 				//digitalWrite(TRIGGER_PIN, HIGH);
 			} else {
+				is_valid = true;
 				//digitalWrite(TRIGGER_PIN, LOW);
 				if (temp_val == last_temp) {
 					//do_print = false;
-				} else {
-					is_valid = true;
 				}
 			}
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
@@ -111,11 +110,11 @@ int main (void) {
 				}
 				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
-				if (is_valid) {
-					i++;
-					send_temperature(mqtt, temp);
-					std::this_thread::sleep_for(std::chrono::seconds(5));
-				}
+			}
+			if (is_valid) {
+				i++;
+				send_temperature(mqtt, temp);
+				std::this_thread::sleep_for(std::chrono::seconds(5));
 			}
 		}
 	}
