@@ -53,7 +53,7 @@ int Mqtt::publish(int32_t *msg_id, std::string topic, int payloadlen, uint8_t *p
 			uint16_t mid;
 			ret = mosquitto_publish(this->mosq, &mid, topic.c_str(), payloadlen, payload, qos, retain);
 			if (msg_id != nullptr) {
-				msg_id = int32_t(mid);
+				*msg_id = int32_t(mid);
 			}
 		}
 	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
