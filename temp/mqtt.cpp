@@ -2,7 +2,7 @@
 
 #include "mqtt.h"
 
-static void Mqtt::init(void) {
+void Mqtt::init(void) {
 	mosquitto_lib_init();
 }
 
