@@ -17,6 +17,22 @@ void init(void) {
 	Mqtt::init();
 }
 
+int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
+	int ret;
+	int32_t mid;
+	//Hex code is two characters per byte + '0x' + '\0'
+	const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
+	uint8_t payload[PAYLOAD_LEN] = {0};
+	snprintf(((char*)payload), PAYLOAD_LEN, "0x%llx", rom_code);
+	ret = mqtt.publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
+	cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
+	if (ret != 0) {
+		return -1;
+	}
+
+	return mid;
+}
+
 int32_t send_temperature(Mqtt& mqtt, float temp) {
 	int ret;
 	int32_t mid;
@@ -59,14 +75,8 @@ int main (void) {
 		cout << "Sensor didn't respond" << endl;
 	} else {
 		cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
-		int ret;
-		int32_t mid;
-		//Hex code is two characters per byte + '0x' + '\0'
-		const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
-		uint8_t payload[PAYLOAD_LEN] = {0};
-		snprintf(((char*)payload), PAYLOAD_LEN, "0x%llx", rom_code);
-		ret = mqtt.publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
-		cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
+
+		send_rom(mqtt, rom_code);
 
 		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 		uint16_t temp_val;
