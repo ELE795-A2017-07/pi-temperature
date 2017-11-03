@@ -70,7 +70,7 @@ int main (void) {
 
 		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 		uint16_t temp_val;
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; ) {
 			bool do_print;
 			do_print = true;
 			temp_ready = OneWire::convert_t(nullptr);
@@ -90,6 +90,7 @@ int main (void) {
 			}
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
 			if (do_print) {
+				i++;
 				last_temp = temp_val;
 				float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
 				cout << "Scratch = 0x";
