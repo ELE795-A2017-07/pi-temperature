@@ -1,5 +1,10 @@
 CC := g++
-override CXXFLAGS += -std=c++0x
+
+ifndef DEBUG
+	DEBUG := 0
+endif
+
+override CXXFLAGS += -std=c++0x -DDEBUG=$(DEBUG)
 override LDFLAGS += -lwiringPi -lmosquitto
 
 OBJ_DIR := build
