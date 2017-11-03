@@ -32,8 +32,8 @@ int main (void) {
 	mqtt.set_credentials("", "");
 	mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE);
 
-	oscope_trigger();
-	rom_code = read_rom_code();
+	OneWire::oscope_trigger();
+	rom_code = OneWire::read_rom_code();
 
 	if (rom_code == 0) {
 		cout << "Sensor didn't respond" << endl;
@@ -53,17 +53,17 @@ int main (void) {
 		while (false) {
 			bool do_print;
 			do_print = true;
-			temp_ready = convert_t(nullptr);
-			scratchpad = read_scratchpad(nullptr);
+			temp_ready = OneWire::convert_t(nullptr);
+			scratchpad = OneWire::read_scratchpad(nullptr);
 			temp_val = (scratchpad[1] << 8) | scratchpad[0];
 
 			if (temp_ready < 1) {
 				do_print = false;
-			} else if (!scratch_crc_check(scratchpad)) {
+			} else if (!OneWire::scratch_crc_check(scratchpad)) {
 				cout << "next is bogus:" << endl;
-				digitalWrite(TRIGGER_PIN, HIGH);
+				//digitalWrite(TRIGGER_PIN, HIGH);
 			} else {
-				digitalWrite(TRIGGER_PIN, LOW);
+				//digitalWrite(TRIGGER_PIN, LOW);
 				if (temp_val == last_temp) {
 					do_print = false;
 				}
@@ -82,7 +82,7 @@ int main (void) {
 		}
 	}
 
-	pinMode(TEMP_SENSOR_PIN, INPUT);
+	//pinMode(TEMP_SENSOR_PIN, INPUT);
 	cout << "Exiting....." << endl;
 	return 0;
 }
