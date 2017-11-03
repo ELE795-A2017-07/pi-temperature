@@ -7,7 +7,7 @@ const int TRIGGER_PIN = 7;
 #include <chrono>
 #define SAMPLE_INTERVAL std::chrono::seconds(10)
 
-#if DEBUG
+#if 1 //DEBUG
 const char MQTT_HOST[] = "hexadecimal";
 const int MQTT_PORT = 1884;
 #else
