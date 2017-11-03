@@ -9,9 +9,9 @@ static void Mqtt::init(void) {
 Mqtt::Mqtt(string clientId, void *obj, bool cleansession) {
 	this.cleansession = cleansession;
 
-	#if LIBMOSQUITTO_VERSION_NUMBER <= 10#15000
+	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
 		mosquitto_new(clientId.c_str(), obj);
-	#elif LIBMOSQUITTO_VERSION_NUMBER <= 10#1004010
+	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
 		mosquitto_new(clientId.c_str(), cleansession, obj);
 	#else
 	#error mosquitto_new not implemented for this libmosquitto version
@@ -34,9 +34,9 @@ int Mqtt::set_credentials(string username, string password) {
 int Mqtt::connect(string host, int port, int keepalive) {
 	int ret;
 
-	#if LIBMOSQUITTO_VERSION_NUMBER <= 10#15000
+	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
 		ret = mosquitto_connect(this.mosq, host.c_str(), port, keepalive, this.cleansession);
-	#elif LIBMOSQUITTO_VERSION_NUMBER <= 10#1004010
+	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
 		ret = mosquitto_connect(this.mosq, host.c_str(), port, keepalive);
 	#else
 	#error mosquitto_connect not implemented for this libmosquitto version
@@ -62,8 +62,8 @@ int Mqtt::disconnect(void) {
 }
 
 #if 0
-	#if LIBMOSQUITTO_VERSION_NUMBER <= 10#15000
-	#elif LIBMOSQUITTO_VERSION_NUMBER <= 10#1004010
+	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
+	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
 	#else
 	#error X not implemented for this libmosquitto version
 	#endif
