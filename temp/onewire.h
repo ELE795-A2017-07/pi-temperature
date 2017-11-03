@@ -2,6 +2,7 @@
 #define ONEWIRE_H
 
 #include <array>
+#include <cstdint>
 
 namespace OneWire {
 

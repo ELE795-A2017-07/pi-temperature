@@ -5,36 +5,38 @@
 
 namespace OneWire {
 
+static int sensor_pin = 0;
+
 void init(void) {
 	wiringPiSetup();
-	pinMode(TEMP_SENSOR_PIN, OUTPUT);
-	pullUpDnControl(TEMP_SENSOR_PIN, PUD_UP);
+	pinMode(sensor_pin, OUTPUT);
+	pullUpDnControl(sensor_pin, PUD_UP);
 
 	pinMode(TRIGGER_PIN, OUTPUT);
 	digitalWrite(TRIGGER_PIN, LOW);
 }
 
 void oscope_trigger(void) {
-	pinMode(TEMP_SENSOR_PIN, OUTPUT);
+	pinMode(sensor_pin, OUTPUT);
 
 	//This sends a recognizable pattern for the oscilloscope to trigger on
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	digitalWrite(sensor_pin, LOW);
 	busywait(25);
-	digitalWrite(TEMP_SENSOR_PIN, HIGH);
+	digitalWrite(sensor_pin, HIGH);
 	busywait(25);
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	digitalWrite(sensor_pin, LOW);
 	busywait(25);
-	digitalWrite(TEMP_SENSOR_PIN, HIGH);
+	digitalWrite(sensor_pin, HIGH);
 	busywait(25);
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	digitalWrite(sensor_pin, LOW);
 	busywait(25);
-	digitalWrite(TEMP_SENSOR_PIN, HIGH);
+	digitalWrite(sensor_pin, HIGH);
 	busywait(25);
 }
 
 void reset_pulse(void) {
-	pinMode(TEMP_SENSOR_PIN, OUTPUT);
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	pinMode(sensor_pin, OUTPUT);
+	digitalWrite(sensor_pin, LOW);
 	busywait(500);
 }
 
@@ -44,16 +46,16 @@ bool read_presence(bool waitUntilLineFree = true) {
 	//Sensor waits 15us to 60 us then pulls low for 60us to 240us
 	auto t1 = get_time_point(60 + 250);
 
-	pinMode(TEMP_SENSOR_PIN, INPUT);
+	pinMode(sensor_pin, INPUT);
 	//Wait for the line to go up after the reset pulse
-	while (!digitalRead(TEMP_SENSOR_PIN)) {}
+	while (!digitalRead(sensor_pin)) {}
 
 	while (!b_responded && chrono::system_clock::now() < t1) {
-		if (!digitalRead(TEMP_SENSOR_PIN)) {
+		if (!digitalRead(sensor_pin)) {
 			b_responded = true;
 
 			if (waitUntilLineFree) {
-				while (!digitalRead(TEMP_SENSOR_PIN)) {}
+				while (!digitalRead(sensor_pin)) {}
 				busywait(2);
 			}
 		}
@@ -63,21 +65,21 @@ bool read_presence(bool waitUntilLineFree = true) {
 }
 
 void write_bit(int bit) {
-	pinMode(TEMP_SENSOR_PIN, OUTPUT);
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	pinMode(sensor_pin, OUTPUT);
+	digitalWrite(sensor_pin, LOW);
 
 	if (bit) {
 		busywait(10);
-		pinMode(TEMP_SENSOR_PIN, INPUT);
+		pinMode(sensor_pin, INPUT);
 		busywait(50);
 	} else {
 		busywait(60);
-		pinMode(TEMP_SENSOR_PIN, INPUT);
+		pinMode(sensor_pin, INPUT);
 	}
 }
 
 void write_slot_recovery(void) {
-	pinMode(TEMP_SENSOR_PIN, INPUT);
+	pinMode(sensor_pin, INPUT);
 	busywait(2);
 }
 
@@ -92,18 +94,18 @@ void write_cmd(int8_t cmd) {
 
 int read_bit(void) {
 	//Indicate a read time slot by pulling the line for 1us
-	pinMode(TEMP_SENSOR_PIN, OUTPUT);
-	digitalWrite(TEMP_SENSOR_PIN, LOW);
+	pinMode(sensor_pin, OUTPUT);
+	digitalWrite(sensor_pin, LOW);
 	busywait(2);
 
 	//Read the line within 15us
-	pinMode(TEMP_SENSOR_PIN, INPUT);
+	pinMode(sensor_pin, INPUT);
 	busywait(3);
-	int bit = digitalRead(TEMP_SENSOR_PIN);
+	int bit = digitalRead(sensor_pin);
 	busywait(60);
 
 	//Wait for the line to go back to the pullup state
-	//while (!digitalRead(TEMP_SENSOR_PIN)) {}
+	//while (!digitalRead(sensor_pin)) {}
 
 	write_slot_recovery();
 
