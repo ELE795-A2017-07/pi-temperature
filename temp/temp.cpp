@@ -82,8 +82,6 @@ int main (void) {
 		}
 	}
 
-	mosquitto_disconnect(mosq_client);
-	mosquitto_destroy(mosq_client);
 	pinMode(TEMP_SENSOR_PIN, INPUT);
 	cout << "Exiting....." << endl;
 	return 0;
