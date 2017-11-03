@@ -20,7 +20,7 @@ int main (void) {
 	uint64_t rom_code;
 	array<uint8_t, 9> scratchpad;
 	int temp_ready = -2;
-	Mqtt mqtt;
+	Mqtt mqtt = Mqtt::Mqtt(MQTT_CLIENT_ID, nullptr, true);
 
 	cout << "Temp started" << endl;
 	init();
@@ -28,7 +28,6 @@ int main (void) {
 	//int major, minor, revision;
 	//mosquitto_lib_version(&major, &minor, &revision);
 	//cout << "Using mosquitto v" << major << "." << minor << "." << revision << endl;
-	mqtt = Mqtt(MQTT_CLIENT_ID, nullptr, true);
 	mqtt.set_credentials("", "");
 	mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE);
 
