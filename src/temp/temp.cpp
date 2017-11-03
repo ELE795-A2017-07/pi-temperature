@@ -67,7 +67,7 @@ int main (void) {
 	while (rom_code == 0) {
 		rom_code = OneWire::read_rom_code();
 	}
-	sstream ss;
+	stringstream ss;
 	ss << "0x" << hex << rom_code;
 	client_id = ss.str();
 
