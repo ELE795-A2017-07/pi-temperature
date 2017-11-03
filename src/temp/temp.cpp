@@ -81,14 +81,8 @@ int main (void) {
 	cout << "Temp started" << endl;
 	init();
 
-	while (rom_code == 0) {
-		rom_code = OneWire::read_rom_code();
-	}
-	stringstream ss;
-	ss << "0x" << std::setfill('0') << std::setw((sizeof rom_code) * 2) << hex << rom_code;
 	client_id = get_mac_addr();
 	cout << "Client ID is " << client_id << endl;
-	cout << "Rom code is " << hex << rom_code << endl;
 
 	//int major, minor, revision;
 	//mosquitto_lib_version(&major, &minor, &revision);
