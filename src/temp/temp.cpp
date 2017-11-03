@@ -70,7 +70,7 @@ int main (void) {
 
 		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 		uint16_t temp_val;
-		while (false) {
+		for (int i = 0; i < 10; i++) {
 			bool do_print;
 			do_print = true;
 			temp_ready = OneWire::convert_t(nullptr);
