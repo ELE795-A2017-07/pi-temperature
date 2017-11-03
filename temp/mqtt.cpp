@@ -19,7 +19,7 @@ Mqtt::Mqtt(std::string clientId, void *obj, bool cleansession) {
 }
 
 Mqtt::~Mqtt(void) {
-	this.disconnect();
+	this->disconnect();
 	mosquitto_destroy(this->mosq);
 }
 
