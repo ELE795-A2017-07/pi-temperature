@@ -7,6 +7,7 @@
 #include <array>
 #include <thread>
 #include <sstream>
+#include <iomanip>
 
 #include "globals.h"
 #include "mqtt.h"
