@@ -59,9 +59,13 @@ int32_t send_temperature(Mqtt& mqtt, float temp) {
 string get_mac_addr(void) {
 	string mac_addr = "Palais des congres (unknown)";
 
-	ifstream myfile("/sys/class/net/wlan0/address");
-	if (myfile.is_open()) {
-		getline(myfile, mac_addr);
+	//FIXME: use read_dir() to list all files, exclude 'lo' and read one of the remaining files
+	ifstream wlanfile("/sys/class/net/wlan0/address");
+	ifstream ethfile("/sys/class/net/eth0/address");
+	if (wlanfile.is_open()) {
+		getline(wlanfile, mac_addr);
+	} else if (ethfile.is_open()) {
+		getline(ethfile, mac_addr);
 	}
 
 	return mac_addr;
