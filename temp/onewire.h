@@ -23,7 +23,7 @@ typedef enum {
 	READ_PWR_SUP  = 0xB4
 } FCT_CMDS_t;
 
-void init(void);
+void init(int _sensor_pin, int _trigger_pin);
 
 void oscope_trigger(void);
 

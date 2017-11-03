@@ -6,14 +6,18 @@
 namespace OneWire {
 
 static int sensor_pin = 0;
+static int trigger_pin = 0;
 
-void init(void) {
+void init(int _sensor_pin, int _trigger_pin) {
+	sensor_pin = _sensor_pin;
+	trigger_pin = _trigger_pin;
+
 	wiringPiSetup();
 	pinMode(sensor_pin, OUTPUT);
 	pullUpDnControl(sensor_pin, PUD_UP);
 
-	pinMode(TRIGGER_PIN, OUTPUT);
-	digitalWrite(TRIGGER_PIN, LOW);
+	pinMode(trigger_pin, OUTPUT);
+	digitalWrite(trigger_pin, LOW);
 }
 
 void oscope_trigger(void) {
