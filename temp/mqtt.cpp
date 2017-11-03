@@ -48,7 +48,7 @@ int Mqtt::connect(std::string host, int port, int keepalive) {
 int Mqtt::publish(int *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain) {
 	int ret;
 	
-	ret = mosquitto_publish(this->mosq, mid, topic.c_str(), payloadlen, payload, qos, retain);
+	ret = mosquitto_publish(this->mosq, msg_id, topic.c_str(), payloadlen, payload, qos, retain);
 
 	return ret;
 }
