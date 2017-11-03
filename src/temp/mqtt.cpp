@@ -24,7 +24,7 @@ Mqtt::~Mqtt(void) {
 	mosquitto_destroy(this->mosq);
 }
 
-std::string get_clientid(void) {
+std::string Mqtt::get_clientid(void) {
 	return this->clientId;
 }
 
