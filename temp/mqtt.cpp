@@ -45,7 +45,7 @@ int Mqtt::connect(std::string host, int port, int keepalive) {
 	return ret;
 }
 
-int Mqtt::publish(int32_t *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain) {
+int Mqtt::publish(int32_t *msg_id, std::string topic, int payloadlen, uint8_t *payload, int qos, bool retain) {
 	int ret;
 	
 	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
