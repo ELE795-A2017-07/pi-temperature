@@ -48,7 +48,7 @@ int main (void) {
 		ret = mqtt.publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
 		cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
 
-		uint16_t last_temp = E_INVALID_SCRATCH;
+		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 		uint16_t temp_val;
 		while (false) {
 			bool do_print;

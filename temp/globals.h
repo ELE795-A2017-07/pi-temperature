@@ -1,9 +1,6 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-//Invalid value, bits 15 to 11 should all be sign bits
-const uint16_t E_INVALID_SCRATCH = 0x8000;
-
 const int TEMP_SENSOR_PIN = 15;
 const int TRIGGER_PIN = 7;
 

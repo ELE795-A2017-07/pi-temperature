@@ -8,6 +8,9 @@
 
 namespace OneWire {
 
+//Invalid value, bits 15 to 11 should all be sign bits
+const uint16_t E_INVALID_SCRATCH = 0x8000;
+
 typedef enum {
 	SEARCH_ROM    = 0xF0,
 	READ_ROM      = 0x33,
