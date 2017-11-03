@@ -1,5 +1,3 @@
-#include <chrono>
-
 #include "utils.h"
 
 chrono::time_point<chrono::system_clock> get_time_point(int us_delay) {
