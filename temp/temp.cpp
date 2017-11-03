@@ -8,11 +8,12 @@
 
 #include "globals.h"
 #include "mqtt.h"
+#include "onewire.h"
 
 using namespace std;
 
 void init(void) {
-	//OneWire::init();
+	OneWire::init();
 	Mqtt::init();
 }
 
