@@ -24,7 +24,7 @@ class Mqtt {
 		~Mqtt(void);
 		int set_credentials(std::string username, std::string password);
 		int connect(std::string host, int port, int keepalive);
-		int publish(int *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain);
+		int publish(int *msg_id, std::string topic, int payloadlen, uint8_t *payload, int qos, bool retain);
 		int disconnect(void);
 };
 
