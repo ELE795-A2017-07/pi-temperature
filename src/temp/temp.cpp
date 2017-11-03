@@ -57,7 +57,7 @@ int32_t send_temperature(Mqtt& mqtt, float temp) {
 }
 
 string get_mac_addr(void) {
-	string mac_addr; = "Palais des congres (unknown)";
+	string mac_addr = "Palais des congres (unknown)";
 
 	ifstream myfile("/sys/class/net/wlan0/address");
 	if (myfile.is_open()) {
