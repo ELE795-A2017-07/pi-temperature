@@ -8,6 +8,7 @@ void Mqtt::init(void) {
 
 Mqtt::Mqtt(std::string clientId, void *obj, bool cleansession) {
 	this->cleansession = cleansession;
+	this->clientId = clientId;
 
 	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
 		this->mosq = mosquitto_new(clientId.c_str(), obj);
@@ -21,6 +22,10 @@ Mqtt::Mqtt(std::string clientId, void *obj, bool cleansession) {
 Mqtt::~Mqtt(void) {
 	this->disconnect();
 	mosquitto_destroy(this->mosq);
+}
+
+std::string get_clientid(void) {
+	return this->clientId;
 }
 
 int Mqtt::set_credentials(std::string username, std::string password) {
