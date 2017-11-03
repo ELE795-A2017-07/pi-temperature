@@ -45,10 +45,22 @@ int Mqtt::connect(std::string host, int port, int keepalive) {
 	return ret;
 }
 
-int Mqtt::publish(int *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain) {
+int Mqtt::publish(int32_t *msg_id, std::string topic, int payloadlen, void *payload, int qos, bool retain) {
 	int ret;
 	
-	ret = mosquitto_publish(this->mosq, msg_id, topic.c_str(), payloadlen, payload, qos, retain);
+	#if LIBMOSQUITTO_VERSION_NUMBER <= 15000
+		{
+			uint16_t mid;
+			ret = mosquitto_publish(this->mosq, &mid, topic.c_str(), payloadlen, payload, qos, retain);
+			if (msg_id != nullptr) {
+				msg_id = int32_t(mid);
+			}
+		}
+	#elif LIBMOSQUITTO_VERSION_NUMBER <= 1004010
+		ret = mosquitto_publish(this->mosq, msg_id, topic.c_str(), payloadlen, payload, qos, retain);
+	#else
+	#error mosquitto_publish not implemented for this libmosquitto version
+	#endif
 
 	return ret;
 }
