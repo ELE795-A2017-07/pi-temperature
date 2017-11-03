@@ -103,7 +103,6 @@ int main (void) {
 			}
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
 			if (do_print) {
-				i++;
 				last_temp = temp_val;
 				float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
 				cout << "Scratch = 0x";
@@ -113,6 +112,7 @@ int main (void) {
 				cout << endl;
 				cout << "Temperature is around " << dec << temp << endl;
 				if (is_valid) {
+					i++;
 					send_temperature(mqtt, temp);
 					std::this_thread::sleep_for(std::chrono::seconds(5));
 				}
