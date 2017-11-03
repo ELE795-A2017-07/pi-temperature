@@ -29,8 +29,8 @@ int main (void) {
 	//int major, minor, revision;
 	//mosquitto_lib_version(&major, &minor, &revision);
 	//cout << "Using mosquitto v" << major << "." << minor << "." << revision << endl;
-	mqtt->set_credentials("", "");
-	mqtt->connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE);
+	mqtt.set_credentials("", "");
+	mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE);
 
 	OneWire::oscope_trigger();
 	rom_code = OneWire::read_rom_code();
@@ -45,7 +45,7 @@ int main (void) {
 		const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
 		uint8_t payload[PAYLOAD_LEN] = {0};
 		snprintf(((char*)payload), PAYLOAD_LEN, "0x%llx", rom_code);
-		ret = mqtt->publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
+		ret = mqtt.publish(&mid, MQTT_CLIENT_ID "/temperature", PAYLOAD_LEN, payload, 0, false);
 		cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
 
 		uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
