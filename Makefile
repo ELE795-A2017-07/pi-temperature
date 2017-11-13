@@ -12,7 +12,7 @@ SRC_DIR := src
 SRC := $(wildcard $(SRC_DIR)/temp/*.cpp)
 TEMP_OBJ := $(patsubst %.cpp,%.o,$(subst $(SRC_DIR),$(OBJ_DIR),$(SRC)))
 TEMP_OBJ_DIR := $(OBJ_DIR)/temp
-DEPS := $(SRC:.cpp=.d)
+DEPS := $(patsubst %.cpp,%.d,$(subst $(SRC_DIR),$(OBJ_DIR),$(SRC)))
 
 .PHONY: print
 print:
@@ -33,5 +33,5 @@ temp: $(TEMP_OBJ)
 	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 -include $(DEPS)
-%.d: %.cpp
-	$(CXX) $(CXXFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(<:.cpp=.o)" "$<"
+$(OBJ_DIR)/%.d: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(subst $(SRC_DIR),$(OBJ_DIR),$(<:.cpp=.o))" "$<"
