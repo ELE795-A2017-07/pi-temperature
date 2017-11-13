@@ -26,12 +26,12 @@ $(TEMP_OBJ_DIR): $(OBJ_DIR)
 $(TEMP_OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp | $(TEMP_OBJ_DIR)
 	$(CC) $(CXXFLAGS) -o $@ -c $^
 
-pwm: $(SRC_DIR)/pwm.c
+pwm: $(SRC_DIR)/pwm.cpp
 	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 temp: $(TEMP_OBJ)
 	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 -include $(DEPS)
-%.d: %.c
+%.d: %.cpp
 	$(CXX) $(CXXFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(<:.cpp=.o)" "$<"
