@@ -1,20 +1,8 @@
 #ifndef LORA_H
 #define LORA_H
 
-
-// LORA REGULATIONS
-#define ETSI_EUROPE_REGULATION 1
-#define FCC_US_REGULATION 2
-#define SENEGAL_REGULATION 3
-
-
-// LORA BANDS
-#define BAND868 1
-#define BAND900 2
-#define BAND433 3
-
-
 #include "config.h"
+#include "lora_defines.h"
 #include "SX1272.h"
 
 #if LORA_REGULATION == ETSI_EUROPE_REGULATION
