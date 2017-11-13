@@ -32,5 +32,9 @@ const int MQTT_KEEPALIVE = 0;
 /* Set this to the right band from lora_defines.h */
 #define LORA_BAND BAND868
 
+#define LORA_MODE  1
+#define node_addr 8
+#define DEFAULT_DEST_ADDR 1
+
 
 #endif /* Guard */
