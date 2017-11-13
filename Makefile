@@ -12,7 +12,7 @@ SRC_DIR := src
 SRC := $(wildcard $(SRC_DIR)/temp/*.cpp)
 TEMP_OBJ := $(patsubst %.cpp,%.o,$(subst $(SRC_DIR),$(OBJ_DIR),$(SRC)))
 TEMP_OBJ_DIR := $(OBJ_DIR)/temp
-DEPS := $(SRC:.c=.d)
+DEPS := $(SRC:.cpp=.d)
 
 .PHONY: print
 print:
@@ -34,4 +34,4 @@ temp: $(TEMP_OBJ)
 
 -include $(DEPS)
 %.d: %.c
-	$(CXX) $(CFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(<:.c=.o)" "$<"
+	$(CXX) $(CXXFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(<:.cpp=.o)" "$<"
