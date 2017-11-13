@@ -20,7 +20,7 @@ using namespace std;
 void init(void) {
 	OneWire::init(TEMP_SENSOR_PIN, TRIGGER_PIN);
 	Mqtt::init();
-	LoRa::init(LORA_MODE, DEFAULT_CHANNEL, node_addr);
+	LoRa::init(LORA_MODE, LORA_DEFAULT_CHANNEL, LORA_NODE_ADDR);
 }
 
 int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
@@ -41,7 +41,7 @@ int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
 
 void lora_send(float temp) {
 		std::cout << "Sending temperature (ping)" << std::endl;
-		int e = LoRa::exchange(DEFAULT_DEST_ADDR, std::to_string(temp));
+		int e = LoRa::exchange(LORA_DEFAULT_DEST_ADDR, std::to_string(temp));
 		switch (e) {
 		case 0:
 			std::cout << "Pong received from gateway!" << std::endl;
