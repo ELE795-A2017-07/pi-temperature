@@ -27,7 +27,7 @@ const uint32_t DEFAULT_CHANNEL=CH_00_433;
 namespace LoRa {
 	void init(int loraMode, int channel, int node_addr, bool paboost = true);
 	void setup_exchange(void);
-	int exchange(int dest_addr);
+	int exchange(int dest_addr, std::string msg);
 };
 
 #endif /* Guard */

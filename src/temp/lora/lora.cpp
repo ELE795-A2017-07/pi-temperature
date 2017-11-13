@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "lora.h"
 
 void LoRa::init(int loraMode, int channel, int node_addr, bool paboost) {
@@ -19,12 +21,13 @@ void LoRa::setup_exchange(void) {
 	sx1272.setPacketType(PKT_TYPE_DATA);
 }
 
-int LoRa::exchange(int dest_addr) {
+int LoRa::exchange(int dest_addr, std::string msg) {
 	int e;
-	uint8_t r_size;
-	uint8_t message[100];
+	std::stringstream ss;
+	std::string s;
 
-	r_size = sprintf((char*)message, "Ping");
-	e = sx1272.sendPacketTimeoutACK(dest_addr, message, r_size);
+	ss << "\\!" << msg;
+	s = ss.str();
+	e = sx1272.sendPacketTimeoutACK(dest_addr, s.c_str(), s.length());
 	return e;
 }

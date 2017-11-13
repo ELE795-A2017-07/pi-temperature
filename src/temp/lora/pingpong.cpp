@@ -41,7 +41,7 @@ int main(void) {
 	LoRa::setup_exchange();
 	while (true) {
 		std::cout << "Sending Ping" << std::endl;
-		e = LoRa::exchange(DEFAULT_DEST_ADDR);
+		e = LoRa::exchange(DEFAULT_DEST_ADDR, "ping!!!");
 		switch (e) {
 		case 0:
 			std::cout << "Pong received from gateway!" << std::endl;
