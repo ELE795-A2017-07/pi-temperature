@@ -1,4 +1,4 @@
-CC := g++
+CXX := g++
 
 ifndef DEBUG
 	DEBUG := 0
