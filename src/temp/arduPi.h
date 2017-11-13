@@ -315,11 +315,7 @@ typedef enum
 } bcm2835FunctionSelect;
 
 
-namespace unistd {
-	//All functions of unistd.h must be called like this: unistd::the_function()
-    #include <unistd.h>
-}
-
+#include <unistd.h>
 
 enum Representation{
 	BIN,
