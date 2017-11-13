@@ -1,17 +1,18 @@
-CXX := g++
+CC := g++
 
 ifndef DEBUG
 	DEBUG := 0
 endif
 
 override CXXFLAGS += -std=c++0x -DDEBUG=$(DEBUG)
-override LDFLAGS += -lwiringPi -lmosquitto -lpthread
+override LDFLAGS += -lwiringPi -lmosquitto
 
 OBJ_DIR := build
 SRC_DIR := src
 SRC := $(wildcard $(SRC_DIR)/temp/*.cpp)
 TEMP_OBJ := $(patsubst %.cpp,%.o,$(subst $(SRC_DIR),$(OBJ_DIR),$(SRC)))
 TEMP_OBJ_DIR := $(OBJ_DIR)/temp
+DEPS := $(SRC:.c=.d)
 
 .PHONY: print
 print:
@@ -23,10 +24,14 @@ $(TEMP_OBJ_DIR): $(OBJ_DIR)
 	@mkdir -p $@
 
 $(TEMP_OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp | $(TEMP_OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -o $@ -c $^
+	$(CC) $(CXXFLAGS) -o $@ -c $^
 
 pwm: $(SRC_DIR)/pwm.c
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 temp: $(TEMP_OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+-include $(DEPS)
+%.d: %.c
+	$(CXX) $(CFLAGS) -MF"$@" -MG -MM -MP -MT"$@" -MT"$(<:.c=.o)" "$<"
