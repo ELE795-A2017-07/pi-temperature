@@ -5,7 +5,7 @@ ifndef DEBUG
 endif
 
 override CXXFLAGS += -std=c++0x -DDEBUG=$(DEBUG)
-override LDFLAGS += -lwiringPi -lmosquitto
+override LDFLAGS += -lwiringPi -lmosquitto -lpthread
 
 OBJ_DIR := build
 SRC_DIR := src
