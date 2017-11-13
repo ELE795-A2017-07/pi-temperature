@@ -28,6 +28,6 @@ int LoRa::exchange(int dest_addr, std::string msg) {
 
 	ss << "\\!" << msg;
 	s = ss.str();
-	e = sx1272.sendPacketTimeoutACK(dest_addr, s.c_str(), s.length());
+	e = sx1272.sendPacketTimeoutACK(dest_addr, (uint8_t*)s.c_str(), (uint16_t)s.length());
 	return e;
 }
