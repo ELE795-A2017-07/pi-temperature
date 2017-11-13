@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "globals.h"
+#include "config.h"
 #include "mqtt.h"
 #include "onewire.h"
 
