@@ -1,5 +1,5 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 
 const int TEMP_SENSOR_PIN = 15;
