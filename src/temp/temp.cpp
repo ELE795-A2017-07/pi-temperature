@@ -147,7 +147,8 @@ int main (void) {
 		}
 
 		if (do_print || is_valid) {
-			float temp = ((temp_val & 0xff0) >> 4) + float(temp_val & 0xf) / 16;
+			int tmp_temp = (!!(temp_val & 0x800) << ((8 * sizeof int) - 1)) | (temp_val & 0x7ff);
+			float temp = tmp_temp / 16.;
 
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
 			if (do_print) {
