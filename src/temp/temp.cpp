@@ -149,8 +149,9 @@ int main (void) {
 		if (do_print || is_valid) {
 			#define NB_REG_BITS 12
 			int m = 1U << (NB_REG_BITS - 1);
+			int mask = (1 << NB_REG_BITS) - 1;
 			#undef NB_REG_BITS
-			int tmp_temp = (temp_val ^ m) - m;
+			int tmp_temp = ((temp_val & mask) ^ m) - m;
 			float temp = tmp_temp / 16.;
 
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
