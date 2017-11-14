@@ -147,7 +147,10 @@ int main (void) {
 		}
 
 		if (do_print || is_valid) {
-			int tmp_temp = ((!!(temp_val & 0x800)) << ((8 * (sizeof (int))) - 1)) | (temp_val & 0x7ff);
+			#define NB_REG_BITS 12
+			int m = 1U << (NB_REG_BITS - 1);
+			#undef NB_REG_BITS
+			int tmp_temp = (temp_value ^ m) - m;
 			float temp = tmp_temp / 16.;
 
 			//cout << "Temperature is ready? " << dec << temp_ready << endl;
