@@ -3,6 +3,8 @@
 
 #include <string>
 
+#define MQTT_QOS 2
+
 class Mqtt {
 	bool cleansession;
 	struct mosquitto *mosq;

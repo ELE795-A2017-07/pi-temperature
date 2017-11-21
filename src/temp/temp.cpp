@@ -35,7 +35,7 @@ int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
 	const size_t PAYLOAD_LEN = (sizeof (rom_code)) * 2 + 3;
 	uint8_t payload[PAYLOAD_LEN] = {0};
 	snprintf(((char*)payload), PAYLOAD_LEN, "0x%llx", rom_code);
-	ret = mqtt.publish(&mid, mqtt.get_clientid() + "/temperature", PAYLOAD_LEN, payload, 0, false);
+	ret = mqtt.publish(&mid, mqtt.get_clientid() + "/temperature", PAYLOAD_LEN, payload, MQTT_QOS, false);
 	cout << "MQTT publish returned " << dec << ret << " and its ID is " << mid << " PAYLOAD_LEN is " << PAYLOAD_LEN << endl;
 	if (ret != 0) {
 		return -1;
