@@ -11,16 +11,21 @@
 #include <iomanip>
 
 #include "config.h"
-#include "mqtt.h"
 #include "onewire.h"
+
 #include "lora.h"
+#include "mqtt.h"
 
 using namespace std;
 
 void init(void) {
 	OneWire::init(TEMP_SENSOR_PIN, TRIGGER_PIN);
-	Mqtt::init();
-	LoRa::init(LORA_MODE, LORA_DEFAULT_CHANNEL, LORA_NODE_ADDR);
+
+	if (USE_LORA) {
+		LoRa::init(LORA_MODE, LORA_DEFAULT_CHANNEL, LORA_NODE_ADDR);
+	} else {
+		Mqtt::init();
+	}
 }
 
 int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
@@ -40,6 +45,7 @@ int32_t send_rom(Mqtt& mqtt, uint64_t rom_code) {
 }
 
 void lora_send(float temp) {
+	if (USE_LORA) {
 		std::cout << "Sending temperature (ping)" << std::endl;
 		int e = LoRa::exchange(LORA_DEFAULT_DEST_ADDR, std::to_string(temp));
 		switch (e) {
@@ -50,6 +56,7 @@ void lora_send(float temp) {
 			std::cout << "No Pong!" << std::endl;
 			break;
 		}
+	}
 }
 
 int32_t send_temperature(Mqtt& mqtt, float temp) {
@@ -118,11 +125,15 @@ int main (void) {
 		} else {
 			cout << "Sensor responded" << endl << "rom code is " << hex << rom_code << endl;
 
-			send_rom(mqtt, rom_code);
+			if (!USE_LORA) {
+				send_rom(mqtt, rom_code);
+			}
 		}
 	}
 
-	LoRa::setup_exchange();
+	if (USE_LORA) {
+		LoRa::setup_exchange();
+	}
 
 	uint16_t last_temp = OneWire::E_INVALID_SCRATCH;
 	uint16_t temp_val;
@@ -165,8 +176,11 @@ int main (void) {
 				cout << "Temperature is around " << dec << temp << endl;
 			}
 			if (is_valid) {
-				lora_send(temp);
-				//send_temperature(mqtt, temp);
+				if (USE_LORA) {
+					lora_send(temp);
+				} else {
+					send_temperature(mqtt, temp);
+				}
 				std::this_thread::sleep_for(SAMPLE_INTERVAL);
 			}
 		}

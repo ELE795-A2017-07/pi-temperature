@@ -1,10 +1,11 @@
 CC := g++
+USE_LORA := 1
 
 ifndef DEBUG
 	DEBUG := 0
 endif
 
-override CXXFLAGS += -std=c++0x -DDEBUG=$(DEBUG)
+override CXXFLAGS += -std=c++0x -DDEBUG=$(DEBUG) -DUSE_LORA=$(USE_LORA)
 override LDFLAGS += -lwiringPi -lmosquitto -lpthread
 
 OBJ_DIR := build
